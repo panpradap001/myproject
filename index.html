@@ -70,6 +70,7 @@
     async function sendMsg() {
     }
 
+
     function getContext() {
     }
 
@@ -97,11 +98,37 @@
       }
     }
 
+    var globalUserid
+    async function sendFlexMessage() {
+      try {
+        if (!globalUserid) {
+          const profile = await liff.getProfile();
+          globalUserid = profile.userId;
+        }
+        const uri = "https://p4xvgrv8-3001.asse.devtunnels.ms";
+        const response = await fetch(`${uri}/api/v1/sendflexmessage/${globalUserid}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("ส่งข้อความสำเร็จ :", result);
+        return result;
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการส่งข้อความ :", error);
+      }
+    }
+
     async function main() {
       alert("LINE Developers x Skooldio")
       await liff.init({ liffId: "2007030998-4ZOZ06X2" })
       getEnvironment()
       getUserProfile()
+      sendFlexMessage();
       // getContext()
       // getFriendship()
       // createUniversalLink()
